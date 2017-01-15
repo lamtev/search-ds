@@ -1,20 +1,19 @@
-package ru.mail.polis;
+package ru.mail.polis.search_ds;
 
 import java.util.Comparator;
 import java.util.List;
 
 //TODO: write code here
-public class AVLTree<E extends Comparable<E>> implements ISortedSet<E> {
+public class RedBlackTree<E extends Comparable<E>> implements ISortedSet<E> {
 
-//    private Node root;
     private int size;
     private final Comparator<E> comparator;
 
-    public AVLTree() {
+    public RedBlackTree() {
         this.comparator = null;
     }
 
-    public AVLTree(Comparator<E> comparator) {
+    public RedBlackTree(Comparator<E> comparator) {
         this.comparator = comparator;
     }
 

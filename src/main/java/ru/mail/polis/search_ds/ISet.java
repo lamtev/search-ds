@@ -1,4 +1,4 @@
-package ru.mail.polis;
+package ru.mail.polis.search_ds;
 
 public interface ISet<E extends Comparable<E>> {
 

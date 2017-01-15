@@ -1,10 +1,6 @@
-package ru.mail.polis;
+package ru.mail.polis.search_ds;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Random;
+import java.util.*;
 
 public class BinarySearchTree<E extends Comparable<E>> implements ISortedSet<E> {
 
