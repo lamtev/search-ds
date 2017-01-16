@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.Callable;
 
+
 /**
  * Created by Nechaev Mikhail
  * Since 24/12/16.
@@ -34,14 +35,14 @@ public class TestTreeSet {
             return null;
         });
         test(AVLTree.class.getName());
-        test(RedBlackTree.class.getName());
+        //test(RedBlackTree.class.getName());
     }
 
     private void pre() {
         int LEN = 10;
         SortedSet<Integer> OK = new TreeSet<>();
-//        ISortedSet<Integer> set = new AVLTree<>();
-        ISortedSet<Integer> set = new RedBlackTree<>();
+        ISortedSet<Integer> set = new AVLTree<>();
+        //ISortedSet<Integer> set = new RedBlackTree<>();
         for (int value = 0; value < LEN; value++) {
             check(OK, set, value, true);
         }
@@ -90,11 +91,11 @@ public class TestTreeSet {
 
     private void bigRandomTest(ISortedSet<Integer> set) {
         SortedSet<Integer> OK = new TreeSet<>();
-        for (int i = 0; i < 1000; i++) {
-            check(OK, set, random.nextInt(1000), true);
+        for (int i = 0; i < 100_000; i++) {
+            check(OK, set, random.nextInt(100_000), true);
         }
-        for (int i = 0; i < 1000; i++) {
-            check(OK, set, random.nextInt(1000), false);
+        for (int i = 0; i < 100_000; i++) {
+            check(OK, set, random.nextInt(100_000), false);
         }
     }
 
@@ -130,11 +131,23 @@ public class TestTreeSet {
         } else {
             assert OK.remove(value) == set.remove(value);
         }
+        if (OK.size() != set.size()) {
+            System.out.println(value);
+            System.out.println(OK.size() + " <--- OK | real ---> " + set.size());
+        }
         assert OK.size() == set.size();
+        if (OK.contains(value) != set.contains(value)) {
+            System.out.println(value);
+            System.out.println(OK.contains(value) + " <--- OK | real ---> " + set.contains(value));
+        }
         assert OK.contains(value) == set.contains(value);
         if (add) {
             assert OK.add(value) == set.add(value);
         } else {
+            if (OK.remove(value) != set.remove(value)) {
+                System.out.println(value);
+                System.out.println(OK.remove(value) + " <--- OK | real ---> " + set.remove(value));
+            }
             assert OK.remove(value) == set.remove(value);
         }
         assert OK.size() == set.size();
