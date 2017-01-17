@@ -115,15 +115,25 @@ public class TestHashTable {
         assert OK.size() == set.size();
         assert OK.contains(value) == set.contains(value);
         if (add) {
+            if (OK.add(value) == set.add(value)) {
+                System.out.println(value);
+                System.out.println(OK.add(value)  + " <--- OK | real ---> " + set.add(value));
+            }
             assert OK.add(value) == set.add(value);
         } else {
             assert OK.remove(value) == set.remove(value);
         }
+        if (OK.size() != set.size()) {
+            System.out.println(value);
+            System.out.println(OK.size() + " <--- OK | real ---> " + set.size());
+        }
+
         assert OK.size() == set.size();
         assert OK.contains(value) == set.contains(value);
         if (add) {
             assert OK.add(value) == set.add(value);
         } else {
+            System.out.println(OK.remove(value) + " " + set.remove(value));
             assert OK.remove(value) == set.remove(value);
         }
         assert OK.size() == set.size();
