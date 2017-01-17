@@ -2,16 +2,6 @@ package ru.mail.polis.search_ds;
 
 import java.util.Comparator;
 
-//FIXME
-/*
-*
-* 105106105108115115103113108104
-*   346 <--- OK | real ---> 345
-*
-* 9912011710311210010697115121
-*   256 <--- OK | real ---> 255
-*
-* */
 public class OpenHashTable<E extends Comparable<E>> implements ISet<E> {
 
     private static final int INITIAL_CAPACITY = 128;
@@ -43,12 +33,13 @@ public class OpenHashTable<E extends Comparable<E>> implements ISet<E> {
     @Override
     public boolean contains(E value) {
         validateValueIsNull(value);
-        int i = -1;
+        int hash1 = hash1(value);
+        int hash2 = hash2(value);
         for (Node<E> x : table) {
-            int hash = hash(value, ++i);
-            if (table[hash] != null && compare(table[hash].value, value) == 0 && !table[hash].deleted) {
+            if (table[hash1] != null && compare(table[hash1].value, value) == 0 && !table[hash1].deleted) {
                 return true;
             }
+            hash1 = (hash1 + hash2) % table.length;
         }
         return false;
     }
@@ -56,17 +47,18 @@ public class OpenHashTable<E extends Comparable<E>> implements ISet<E> {
     @Override
     public boolean add(E value) {
         validateValueIsNull(value);
-        int i = -1;
+        int hash1 = hash1(value);
+        int hash2 = hash2(value);
         for (Node<E> x : table) {
-            int hash = hash(value, ++i);
-            if (table[hash] == null || table[hash].deleted) {
-                table[hash] = new Node<>(value);
+            if (table[hash1] == null || table[hash1].deleted) {
+                table[hash1] = new Node<>(value);
                 ++size;
                 resize();
                 return true;
-            } else if (compare(table[hash].value, value) == 0) {
+            } else if (compare(table[hash1].value, value) == 0) {
                 return false;
             }
+            hash1 = (hash1 + hash2) % table.length;
         }
         return false;
     }
@@ -74,19 +66,20 @@ public class OpenHashTable<E extends Comparable<E>> implements ISet<E> {
     @Override
     public boolean remove(E value) {
         validateValueIsNull(value);
-        int i = -1;
+        int hash1 = hash1(value);
+        int hash2 = hash2(value);
         for (Node<E> x : table) {
-            int hash = hash(value, ++i);
-            if (table[hash] != null) {
-                if (table[hash].deleted) {
+            if (table[hash1] != null) {
+                if (table[hash1].deleted) {
                     return false;
                 }
-                if (compare(table[hash].value, value) == 0) {
-                    table[hash].deleted = true;
+                if (compare(table[hash1].value, value) == 0) {
+                    table[hash1].deleted = true;
                     --size;
                     return true;
                 }
             }
+            hash1 = (hash1 + hash2) % table.length;
         }
         return false;
     }
@@ -97,14 +90,10 @@ public class OpenHashTable<E extends Comparable<E>> implements ISet<E> {
         }
     }
 
-    private int hash(E value, int i) {
-        return (hash1(value) + i * hash2(value)) % table.length;
-    }
-
     private int hash1(E value) {
         String s = (String) value;
         int h = 0;
-        int a = table.length - 1;
+        int a = 31;
         for (char x : s.toCharArray()) {
             h = Math.abs(h * a + x) % table.length;
         }
@@ -117,7 +106,7 @@ public class OpenHashTable<E extends Comparable<E>> implements ISet<E> {
         for (char x : s.toCharArray()) {
             h = Math.abs(h + x) % (table.length - 1) + 1;
         }
-        return h;
+        return h % 2 == 0 ? Math.abs(h - 1) : h;
     }
 
     private int compare(E v1, E v2) {
